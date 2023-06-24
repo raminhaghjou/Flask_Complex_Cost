@@ -24,3 +24,6 @@ class TestBlock():
         with pytest.raises(ValueError) as exc:
             b.__delitem__(index)
         assert (exc.value == "Index out of range")
+        
+    def test_set_item(self):
+        assert b.set_item(self.value)
