@@ -12,7 +12,8 @@ class FloorCost(cost.Cost):
         return str(list(self.cost_list))
     
     def __setitem__(self, index, value):
-        self.cost_list[index] = value if value > 0 else None
+        if value > 0: self.cost_list[index] = value
+        else: raise ValueError("Value must be positive")
         
     def __getitem__(self, index):
         return self.cost_list[index]

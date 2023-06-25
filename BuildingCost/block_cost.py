@@ -24,4 +24,4 @@ class BlockCost(cost.Cost):
         
     def set_item(self, value):
         if value > 0 : return self.cost_list.append(value)
-        else : raise ValueError("Value must be positive")
+        else : raise Exception("Value must be positive")
