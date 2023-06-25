@@ -23,5 +23,5 @@ class FloorCost(cost.Cost):
         
     def set_item(self, value):
         if value > 0 : return self.cost_list.append(value)
-        else : return self.cost_list
+        else : raise ValueError("Value must be positive")
         

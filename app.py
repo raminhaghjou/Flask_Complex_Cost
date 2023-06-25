@@ -12,10 +12,29 @@ block = [5, 6, 7, 8, 9]
 floor = [10, 11, 12, 13, 14]
 unit = [15, 16, 17, 18]
 
+cost_town = []
+
 
 @app.route('/', methods=['GET'])
 def home():
     return 'Welcome to the Complex Cost API!'
+
+@app.route('/town-cost',methods=['POST'])
+def town_cost():
+    if "id" in request.form and "cost" in request.form:
+        id = request.form["id"]
+        cost = request.form["cost"]
+        if int(id) in town:
+            tc = TownCost()
+            tc.set_item(int(cost))
+            return "Success", 200
+        else:
+            return jsonify({"Error": "Id is not valid","id" : id}), 403
+        
+    else:
+        return jsonify({"Error": "Missing input parameters [id or cost]"})
+    
+    return "Success", 200
 
 @app.route('/town-cost',methods=['POST'])
 def town_cost():
