@@ -15,6 +15,10 @@ unit = [15, 16, 17, 18]
 
 price = {"town":[], "floor":[], "block": [], "unit":[]}
 
+tc = TownCost()
+bc = BlockCost()
+fc = FloorCost()
+uc = UnitCost()
 
 @app.route('/', methods=['GET'])
 def home():
@@ -26,9 +30,10 @@ def town_cost():
         id = request.form["id"]
         cost = request.form["cost"]
         if int(id) in town:
-            tc = TownCost()
+            # tc = TownCost()
             tc.set_item(int(cost))
-            price["town"].append({"id" : int(id), "cost" : int(cost)})
+            # price["town"].append({"id" : int(id), "cost" : int(cost)})
+            price["town"].append({"id" : int(id), "cost" : tc.__getitem__(int(id))})
             flash('You cost successfully inserted')
             return "", 200
         else:
@@ -45,7 +50,23 @@ def show_town_cost():
         id = request.args.get("id")
         matching_dicts = list(filter(lambda x: x["id"] == int(id), price["town"]))
         if len(matching_dicts) > 0:                                            #any(id in d for d in cost_town["town"]):
-            return jsonify(str(matching_dicts[0])), 200
+            return jsonify(str(tc.__getitem__(int(id)))), 200#jsonify(str(matching_dicts[0])), 200
+        else:
+            return jsonify({"Error": "Id is not valid","id" : id}), 500
+    else:
+        return jsonify({"Error": "Missing input parameters [id]"})
+    
+    return "Success", 200
+
+@app.route('/town-cost',methods=['Delete'])
+def delete_town_cost():
+    if "id" in request.args:
+        id = request.args.get("id")
+        matching_dicts = list(filter(lambda x: x["id"] == int(id), price["town"]))
+        if len(matching_dicts) > 0:                                            #any(id in d for d in cost_town["town"]):
+            tc.__delitem__(int(id))
+            price["town"].remove(matching_dicts[0])
+            return "",200
         else:
             return jsonify({"Error": "Id is not valid","id" : id}), 500
         
@@ -61,9 +82,10 @@ def block_cost():
         id = request.form["id"]
         cost = request.form["cost"]
         if int(id) in block:
-            bc = BlockCost()
+            # bc = BlockCost()
             bc.set_item(int(cost))
-            price["block"].append({"id" : int(id), "cost" : int(cost)})
+            # price["block"].append({"id" : int(id), "cost" : int(cost)})
+            price["block"].append({"id" : int(id), "cost" : tc.__getitem__(int(id))})
             return "", 200
         else:
             return jsonify({"Error": "Id is not valid","id" : id}), 403
@@ -74,13 +96,13 @@ def block_cost():
     return "Success", 200
 
 
-app.route('/block-cost',methods=['GET'])
+@app.route('/block-cost',methods=['GET'])
 def show_block_cost():
     if "id" in request.args:
         id = request.args.get("id")
         matching_dicts = list(filter(lambda x: x["id"] == int(id), price["block"]))
         if len(matching_dicts) > 0:                                            #any(id in d for d in cost_town["town"]):
-            return jsonify(str(matching_dicts[0])), 200
+            return jsonify(str(bc.__getitem__(int(id)))), 200 #jsonify(str(matching_dicts[0])), 200
         else:
             return jsonify({"Error": "Id is not valid","id" : id}), 500
         
@@ -88,6 +110,25 @@ def show_block_cost():
         return jsonify({"Error": "Missing input parameters [id]"})
     
     return "Success", 200
+
+
+@app.route('/block-cost',methods=['Delete'])
+def delete_block_cost():
+    if "id" in request.args:
+        id = request.args.get("id")
+        matching_dicts = list(filter(lambda x: x["id"] == int(id), price["block"]))
+        if len(matching_dicts) > 0:                                            #any(id in d for d in cost_town["town"]):
+            bc.__delitem__(int(id))
+            price["block"].remove(matching_dicts[0])
+            return "",200
+        else:
+            return jsonify({"Error": "Id is not valid","id" : id}), 500
+        
+    else:
+        return jsonify({"Error": "Missing input parameters [id]"})
+    
+    return "Success", 200
+
 
 
 
@@ -97,9 +138,9 @@ def floor_cost():
         id = request.form["id"]
         cost = request.form["cost"]
         if int(id) in floor:
-            fc = FloorCost()
+            # fc = FloorCost()
             fc.set_item(int(cost))
-            price["floor"].append({"id" : int(id), "cost" : int(cost)})
+            price["floor"].append({"id" : int(id), "cost" : fc.__getitem__(int(id))})
             return "", 200
         else:
             return jsonify({"Error": "Id is not valid","id" : id}), 403
@@ -111,13 +152,13 @@ def floor_cost():
 
 
 
-app.route('/floor-cost',methods=['Get'])
+@app.route('/floor-cost',methods=['Get'])
 def show_floor_cost():
     if "id" in request.args:
         id = request.args("id")
         matching_dicts = list(filter(lambda x: x["id"] == int(id), price["floor"]))
         if len(matching_dicts) > 0:                                            #any(id in d for d in cost_town["town"]):
-            return jsonify(str(matching_dicts[0])), 200
+            return jsonify(str(fc.__getitem__(int(id)))), 200
         else:
             return jsonify({"Error": "Id is not valid","id" : id}), 500
         
@@ -125,6 +166,25 @@ def show_floor_cost():
         return jsonify({"Error": "Missing input parameters [id]"})
     
     return "Success", 200
+
+
+@app.route('/floor-cost',methods=['Delete'])
+def delete_floor_cost():
+    if "id" in request.args:
+        id = request.args.get("id")
+        matching_dicts = list(filter(lambda x: x["id"] == int(id), price["floor"]))
+        if len(matching_dicts) > 0:                                            #any(id in d for d in cost_town["town"]):
+            fc.__delitem__(id)
+            price["floor"].remove(matching_dicts[0])
+            return "",200
+        else:
+            return jsonify({"Error": "Id is not valid","id" : id}), 500
+        
+    else:
+        return jsonify({"Error": "Missing input parameters [id]"})
+    
+    return "Success", 200
+
 
 
 @app.route('/unit-cost',methods=['POST'])
@@ -133,9 +193,9 @@ def unit_cost():
         id = request.form["id"]
         cost = request.form["cost"]
         if int(id) in unit:
-            uc = UnitCost()
+            # uc = UnitCost()
             uc.set_item(int(cost))
-            price["unit"].append({"id" : int(id), "cost" : int(cost)})
+            price["unit"].append({"id" : int(id), "cost" : uc.__getitem__(int(id))})
             return "", 200
         else:
             return jsonify({"Error": "Id is not valid","id" : id}), 403
@@ -145,13 +205,13 @@ def unit_cost():
     
     return "Success", 200
 
-app.route('/unit-cost',methods=['Get'])
+@app.route('/unit-cost',methods=['Get'])
 def show_unit_cost():
     if "id" in request.args:
         id = request.args.get("id")
         matching_dicts = list(filter(lambda x: x["id"] == int(id), price["unit"]))
         if len(matching_dicts) > 0:                                            #any(id in d for d in cost_town["town"]):
-            return jsonify(str(matching_dicts[0])), 200
+            return jsonify(str(uc.__getitem__(int(id)))), 200
         else:
             return jsonify({"Error": "Id is not valid","id" : id}), 500
         
@@ -159,6 +219,25 @@ def show_unit_cost():
         return jsonify({"Error": "Missing input parameters [id]"})
     
     return "Success", 200
+
+
+@app.route('/unit-cost',methods=['Delete'])
+def delete_unit_cost():
+    if "id" in request.args:
+        id = request.args.get("id")
+        matching_dicts = list(filter(lambda x: x["id"] == int(id), price["unit"]))
+        if len(matching_dicts) > 0:                                            #any(id in d for d in cost_town["town"]):
+            uc.__delitem__(id)
+            price["unit"].remove(matching_dicts[0])
+            return "",200
+        else:
+            return jsonify({"Error": "Id is not valid","id" : id}), 500
+        
+    else:
+        return jsonify({"Error": "Missing input parameters [id]"})
+    
+    return "Success", 200
+
 
 
 if __name__ == '__main__':

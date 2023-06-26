@@ -12,7 +12,7 @@ class TownCost(cost.Cost):
         return str(list(self.cost_list))
     
     def __setitem__(self, index, value):
-        if value > 0: self.cost_list[index] = value
+        if value > 0: self.cost_list[index] = [index, value]
         else: raise ValueError("Value must be positive")
         
     def __getitem__(self, index):
